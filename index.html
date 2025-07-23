@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcript Speaker Namer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100vh - 120px);
+        }
+        .transcript-area {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .video-container {
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        #transcriptDisplay {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .speaker-panel {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-y: auto;
+        }
+        .file-input {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .speaker-item {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .speaker-id {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .speaker-text {
+            color: #666;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        .timestamp-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .timestamp-link:hover {
+            text-decoration: underline;
+        }
+        .name-input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .generate-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .generate-btn:hover {
+            background: #218838;
+        }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        video {
+            width: 100%;
+            max-height: 300px;
+        }
+        .transcript-line {
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .transcript-line:hover {
+            background: #e9ecef;
+        }
+        .transcript-timestamp {
+            color: #666;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .transcript-speaker {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .output-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: none;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Transcript Speaker Namer</h1>
+            <p>Upload SRT files and name the speakers for easy identification</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="transcript-area">
+                <div class="file-input">
+                    <input type="file" id="srtFile" accept=".srt" />
+                    <p>Choose an SRT file to begin</p>
+                </div>
+                
+                <div class="video-container" id="videoContainer" style="display: none;">
+                    <video id="videoPlayer" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                    <input type="file" id="videoFile" accept=".mp4,.webm,.ogg" style="margin-top: 10px;" />
+                    <label for="videoFile">Optional: Add video file for context</label>
+                </div>
+                
+                <div id="transcriptDisplay"></div>
+                
+                <div class="output-area" id="outputArea">
+                    <h3>Generated Output</h3>
+                    <button class="download-btn" onclick="downloadNamedSrt()">Download Named SRT</button>
+                    <button class="download-btn" onclick="downloadCollatedText()">Download Collated Text</button>
+                    <pre id="outputContent"></pre>
+                </div>
+            </div>
+            
+            <div class="speaker-panel">
+                <h3>Speakers to Name</h3>
+                <div id="speakerList"></div>
+                <button class="generate-btn" id="generateBtn" onclick="generateOutput()" disabled>
+                    Generate Named Transcript
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
